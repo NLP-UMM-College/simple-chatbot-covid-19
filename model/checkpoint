@@ -1,0 +1,2 @@
+model_checkpoint_path: "D:\\Kuliah baru\\SMT 6\\NLP\\Coba Baru\\COVID-Dialogue\\simple-chatbot-covid-19\\model\\test_v2_16sept_1500epoch"
+all_model_checkpoint_paths: "D:\\Kuliah baru\\SMT 6\\NLP\\Coba Baru\\COVID-Dialogue\\simple-chatbot-covid-19\\model\\test_v2_16sept_1500epoch"
