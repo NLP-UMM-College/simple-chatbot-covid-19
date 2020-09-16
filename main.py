@@ -2,9 +2,9 @@ import requests
 import nltk
 import numpy
 import tflearn
-import tensorflow
+import tensorflow as tf
 import random
-
+from sklearn.metrics import classification_report
 from bs4 import BeautifulSoup 
 from urllib.request import urlopen
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
@@ -17,7 +17,7 @@ temukan_jawaban = False
 jawaban_selesai = False
 baris_jawaban   = False
 
-with open("data2.txt","rt",encoding = "utf8",errors="ignore") as anriswa:
+with open("COVID-Dialogue-Dataset-English.txt","rt",encoding = "utf8",errors="ignore") as anriswa:
    for myline in anriswa:
         myline = myline.lower()
         for i in myline :
@@ -89,20 +89,36 @@ for x, doc in enumerate(docs_x):
 training = numpy.array(training)
 output = numpy.array(output)
 
-print(len(output[0]))
+# print(len(output[0]))
+
+# Kalau ingin pakai K-Fold
+
+# accuracies = []
+
+# for fold in range(1, 11):
+#     tf.reset_default_graph()
 
 net = tflearn.input_data(shape=[None, len(training[0])])
 net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
+    # adam = tflearn.optimizers.Adam(learning_rate=0.0001)
 net = tflearn.regression(net, optimizer='adam', metric='accuracy')
 
 
 model = tflearn.DNN(net, tensorboard_verbose=3, tensorboard_dir='/tmp/tflearn_logs/')
-model.load("model/model.tflearn_indo_scrape_fix")
-# model.fit(training, output, n_epoch=1500, batch_size=8, show_metric=True)
-# model.save("model/model.tflearn_indo_scrape_7")
+# model.load("model/test")
+model.fit(training, output, n_epoch=1500, batch_size=16, show_metric=True)
+score = model.evaluate(training, output)
+    # accuracies.append(score[0])
+print(model.evaluate(training, output))
+    # print(classification_report(training, output))
+    # model.save("model/batch8epoch1000")
+model.save('model/test_v2_16sept_1500epoch')
+
+# accuracies = numpy.array(accuracies)
+# print(accuracies)
 
 def bag_of_words(s, words):
     bag = [0 for _ in range(len(words))]
